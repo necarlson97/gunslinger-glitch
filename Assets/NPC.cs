@@ -16,7 +16,7 @@ public class NPC : MonoBehaviour {
     internal int facing = -1;
 
     // How quickly they can draw
-    public float difficulty = 0.5f;
+    public float difficulty = 0.1f;
 
     internal bool active = false;
 
@@ -44,7 +44,7 @@ public class NPC : MonoBehaviour {
             facing = 1;
         }
         s = GetComponent<Shooter>();
-        s.drawSpeed = 2f;
+        s.drawSpeed = difficulty;
         SetPortrait();
     }
 
@@ -92,10 +92,11 @@ public class NPC : MonoBehaviour {
         s.state = "dead";
 
         var gore = transform.Find("Android Gore");
-        if (human) {
-            gore = transform.Find("Human Gore");
-        }
+        if (human) gore = transform.Find("Human Gore");
         s.PlayParticles(gore);
+
+        if (human) s.PlaySound("human-die");
+        else s.PlaySound("android-die");
 
         FindObjectOfType<Player>().CheckShot(gameObject);
     }
@@ -126,7 +127,7 @@ public class NPC : MonoBehaviour {
         }
         active = true;
         InvokeRepeating("ChangeDrawing", Random.Range(0f, 1f), 1f);
-        InvokeRepeating("ChangeDucking", Random.Range(0f, 1f), 5f);
+        InvokeRepeating("ChangeDucking", Random.Range(0f, 1f), 0.5f);
     }
 
     public string DebugMsg() {

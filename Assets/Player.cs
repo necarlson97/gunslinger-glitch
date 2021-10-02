@@ -16,17 +16,19 @@ public class Player : MonoBehaviour {
     int toLevel = 0;
     int levelHeight = 10;
     // TODO probs 10 idk
-    int maxLevel = 5;
+    int maxLevel = 4;
 
     // If we want to be somewhere else,
     // but are waiting for player to press up
-    int desiredLevel = 1;
+    internal int desiredLevel = 1;
 
     // Y offset for where the floor looks like it is
     float floorLevel = -2.2f;
 
     // TODO default false
     public bool debugging = true;
+
+    int wins = 0;
 
     void Start() {
         s = GetComponent<Shooter>();
@@ -65,14 +67,19 @@ public class Player : MonoBehaviour {
             rightScript.difficulty += (float) level / 10f;
             opponents[level] = os;
         }
+
+        // Boss too
+        var b = GameObject.Find("Boss").GetComponent<Boss>();
+        if (b.s.state == "dead") b.Refresh();
     }
 
     bool GoToFloor(int floor) {
         // If we are in motion wait
-        if (toLevel != currentLevel) {
+        if (OnTheWay()) {
             return false;
         }
         toLevel = floor;
+        s.PlaySound("elevator", transform.Find("Elevator"));
         return true;
     }
 
@@ -80,12 +87,25 @@ public class Player : MonoBehaviour {
         // if we got to a new floor, we are alive or respawning
         s.state = "alive";
         currentLevel = toLevel;
+
+        // Never want to stay below
         if (currentLevel == 0) {
+            desiredLevel = 1;
             SpawnOpponents();
             return;
         }
+        if (currentLevel < 0) {
+            desiredLevel = 0;
+            return;
+        }
+
         if (currentLevel == maxLevel+1) {
-            Debug.Log("You win!");
+            GameObject.Find("Boss").GetComponent<Boss>().Activate();
+            return;
+        }
+        if (currentLevel == maxLevel+2) {
+            wins += 1;
+            GameObject.Find("Floor (6)/Victory/Score").GetComponent<Text>().text = wins;
             return;
         }
         foreach (var o in opponents[currentLevel]) {
@@ -105,9 +125,9 @@ public class Player : MonoBehaviour {
             ArriveOnFloor();
         }
         
-        if (toLevel != currentLevel) {
+        if (OnTheWay()) {
             // Keep your arms and legs in the elivator
-            transform.position = Vector3.Lerp(transform.position, toVec, 0.002f);
+            transform.position = Vector3.Lerp(transform.position, toVec, 0.009f);
             s.NoInput();
             return;
         }
@@ -115,10 +135,10 @@ public class Player : MonoBehaviour {
         // Press up to next level
         // TODO indicator above their head?
         transform.Find("Elevator Help").gameObject.SetActive(false);
-        if (toLevel != desiredLevel) {
+        if (WaitingForButton()) {
             if (Input.GetKey("w") || Input.GetKey("up")) {
                 GoToFloor(desiredLevel);
-            } else {
+            } else if (s.ReloadProgress() == 1) {
                 transform.Find("Elevator Help").gameObject.SetActive(true);
             }
         }
@@ -129,6 +149,15 @@ public class Player : MonoBehaviour {
             s.drawing = 1;
         } else {
             s.drawing = 0;
+        }
+
+        // Option floors
+        if (Input.GetKeyDown("1")) {
+            desiredLevel = -1;
+        } else if (Input.GetKey("2")) {
+            desiredLevel = -2;
+        }  else if (Input.GetKey("9")) {
+            desiredLevel = maxLevel + 1;
         }
 
         if (Input.GetKeyDown("0")) {
@@ -154,14 +183,26 @@ public class Player : MonoBehaviour {
 
     public void CheckShot(GameObject killed) {
         // Get rid of these folks, we don't need them
-        foreach (var o in opponents[currentLevel]) {
-            o.GetComponent<NPC>().Deactivate();
+        if (opponents.ContainsKey(currentLevel)) {
+            foreach (var o in opponents[currentLevel]) {
+                o.GetComponent<NPC>().Deactivate();
+            }
+        }
+        // if someone already died, then whatever
+        if (WaitingForButton()) {
+            return;
         }
 
         // Go to start immediatly if I (and someone else) was killed
-        if (killed == gameObject || toLevel == 0) {
+        if (killed == gameObject) {
             GoToFloor(0);
             desiredLevel = 1;
+            return;
+        }
+
+        if (killed.GetComponent<Boss>()) {
+            desiredLevel = currentLevel + 1;
+            killed.GetComponent<Boss>().Deactivate();
             return;
         }
 
@@ -177,5 +218,21 @@ public class Player : MonoBehaviour {
                 "Player", s.state, currentLevel,
                 s.drawProgress, s.ducking, s.ReloadProgress(),
                 desiredLevel, toLevel);
+    }
+
+    public bool OnTheWay() {
+        // If the elevator is moving to a floor
+        return toLevel != currentLevel;
+    }
+
+    public bool WaitingForButton() {
+        // If the elevator has a new destination.
+        // and we are just waitinf for the player
+        return desiredLevel != toLevel;
+    }
+
+    public bool GoingDown() {
+        // If we are headed down next
+        return desiredLevel < toLevel;
     }
 }

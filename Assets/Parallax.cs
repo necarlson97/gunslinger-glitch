@@ -13,7 +13,7 @@ using UnityEngine;
         var distance = 1f;
         foreach (Transform t in transform) {
             distance -= gapSize;
-            t.position = Vector3.Scale(p.position, new Vector3(0, distance, 0));
+            t.position = new Vector3(t.position.x, p.position.y * distance, t.position.z);
         }
      }
  }

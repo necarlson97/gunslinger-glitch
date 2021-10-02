@@ -2,27 +2,59 @@
 <mlt LC_NUMERIC="C" version="6.19.0" title="Shotcut version 19.12.31" producer="main_bin">
   <profile description="automatic" width="576" height="324" progressive="1" sample_aspect_num="1" sample_aspect_den="1" display_aspect_num="576" display_aspect_den="324" frame_rate_num="24" frame_rate_den="1" colorspace="601"/>
   <producer id="producer0" title="Anonymous Submission" in="00:00:00.000" out="00:00:20.792">
-    <property name="length">00:00:20.833</property>
+    <property name="length">500</property>
     <property name="eof">pause</property>
-    <property name="resource">elevator.webm</property>
+    <property name="resource">billboard-floor-blender0001-0500.webm</property>
     <property name="audio_index">-1</property>
     <property name="video_index">0</property>
     <property name="mute_on_pause">0</property>
     <property name="mlt_service">avformat-novalidate</property>
     <property name="seekable">1</property>
     <property name="aspect_ratio">1</property>
-    <property name="creation_time">2021-10-02T16:19:05</property>
-    <property name="shotcut:hash">076391152f64325247b0abc8743a1df5</property>
-    <property name="ignore_points">1</property>
+    <property name="creation_time">2021-10-02T18:55:49</property>
     <property name="global_feed">1</property>
     <property name="xml">was here</property>
-    <property name="shotcut:caption">elevator.webm</property>
+    <property name="shotcut:hash">aeb3a1e6865faee3cee4d05f315d277c</property>
   </producer>
-  <playlist id="main_bin" title="Shotcut version 19.12.31">
-    <property name="shotcut:projectAudioChannels">2</property>
-    <property name="shotcut:projectFolder">0</property>
+  <producer id="producer1" title="Anonymous Submission" in="00:00:00.000" out="00:00:20.792">
+    <property name="length">00:00:20.833</property>
+    <property name="eof">pause</property>
+    <property name="resource">basement-floor-blender0001-0500.webm</property>
+    <property name="audio_index">-1</property>
+    <property name="video_index">0</property>
+    <property name="mute_on_pause">0</property>
+    <property name="mlt_service">avformat-novalidate</property>
+    <property name="seekable">1</property>
+    <property name="aspect_ratio">1</property>
+    <property name="creation_time">2021-10-02T18:59:28</property>
+    <property name="global_feed">1</property>
+    <property name="xml">was here</property>
+    <property name="shotcut:hash">a8af9b13d480f46a73dc21e30e4796f5</property>
+    <property name="ignore_points">1</property>
+    <property name="shotcut:caption">basement-floor-blender0001-0500.webm</property>
+  </producer>
+  <producer id="producer2" title="Anonymous Submission" in="00:00:00.000" out="00:00:20.792">
+    <property name="length">00:00:20.833</property>
+    <property name="eof">pause</property>
+    <property name="resource">subbasement-floor0001-0500.webm</property>
+    <property name="audio_index">-1</property>
+    <property name="video_index">0</property>
+    <property name="mute_on_pause">0</property>
+    <property name="mlt_service">avformat-novalidate</property>
+    <property name="seekable">1</property>
+    <property name="aspect_ratio">1</property>
+    <property name="creation_time">2021-10-02T19:04:41</property>
+    <property name="global_feed">1</property>
+    <property name="xml">was here</property>
+    <property name="shotcut:hash">2098f2326532132e2752d444748fa9f7</property>
+    <property name="ignore_points">1</property>
+    <property name="shotcut:caption">subbasement-floor0001-0500.webm</property>
+  </producer>
+  <playlist id="main_bin">
     <property name="xml_retain">1</property>
     <entry producer="producer0" in="00:00:00.000" out="00:00:20.792"/>
+    <entry producer="producer1" in="00:00:00.000" out="00:00:20.792"/>
+    <entry producer="producer2" in="00:00:00.000" out="00:00:20.792"/>
   </playlist>
   <producer id="black" in="00:00:00.000" out="00:00:20.792">
     <property name="length">00:00:20.833</property>
@@ -36,29 +68,29 @@
   <playlist id="background">
     <entry producer="black" in="00:00:00.000" out="00:00:20.792"/>
   </playlist>
-  <producer id="producer1" title="Anonymous Submission" in="00:00:00.000" out="00:00:20.792">
+  <producer id="producer3" title="Anonymous Submission" in="00:00:00.000" out="00:00:20.792">
     <property name="length">00:00:20.833</property>
     <property name="eof">pause</property>
-    <property name="resource">elevator.webm</property>
+    <property name="resource">floor-40001-0500.webm</property>
     <property name="audio_index">-1</property>
     <property name="video_index">0</property>
     <property name="mute_on_pause">0</property>
     <property name="mlt_service">avformat-novalidate</property>
     <property name="seekable">1</property>
     <property name="aspect_ratio">1</property>
-    <property name="creation_time">2021-10-02T16:19:05</property>
-    <property name="shotcut:hash">076391152f64325247b0abc8743a1df5</property>
+    <property name="creation_time">2021-10-02T20:00:00</property>
+    <property name="shotcut:hash">796682b66c24718f887eaab4c2bebc65</property>
     <property name="ignore_points">0</property>
+    <property name="shotcut:caption">floor-40001-0500.webm</property>
     <property name="global_feed">1</property>
     <property name="xml">was here</property>
-    <property name="shotcut:caption">elevator.webm</property>
   </producer>
   <playlist id="playlist0">
     <property name="shotcut:video">1</property>
     <property name="shotcut:name">V1</property>
-    <entry producer="producer1" in="00:00:00.000" out="00:00:20.792"/>
+    <entry producer="producer3" in="00:00:00.000" out="00:00:20.792"/>
   </playlist>
-  <tractor id="tractor0" title="Shotcut version 19.12.31" global_feed="1" in="00:00:00.000" out="00:00:20.792">
+  <tractor id="tractor0" title="Shotcut version 19.12.31" global_feed="1">
     <property name="shotcut">1</property>
     <property name="shotcut:projectAudioChannels">2</property>
     <property name="shotcut:projectFolder">0</property>

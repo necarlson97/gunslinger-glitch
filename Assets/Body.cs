@@ -9,6 +9,8 @@ public class Body : MonoBehaviour {
             GetComponentInParent<NPC>().Shot(other);
         } else if (GetComponentInParent<Player>()) {
             GetComponentInParent<Player>().Shot(other);
+        } else if (GetComponentInParent<Boss>()) {
+            GetComponentInParent<Boss>().Shot(other);
         } else {
             Debug.Log("What did we shot? " + gameObject.name);
         }

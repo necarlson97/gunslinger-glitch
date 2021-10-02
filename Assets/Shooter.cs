@@ -20,6 +20,7 @@ public class Shooter : MonoBehaviour {
 
     // Info that the NPC / Player script can use to control
     internal bool ducking = false;
+    bool lastFrameDucking = false;
     internal int drawing = 0; // -1 for left, 1 for right
 
     // How long it takes to prepare a shot
@@ -53,6 +54,13 @@ public class Shooter : MonoBehaviour {
         // Make sure bullet is inactive by default
         transform.Find("Gun/Bullet").gameObject.SetActive(false);
 
+        // Play sound if we just started ducking
+        // TODO unducking?
+        if (lastFrameDucking != ducking) {
+            PlaySound(ducking ? "crouch" : "stand");
+            lastFrameDucking = ducking;
+        }
+
         // Continue drawing weapon (or put it away)
         drawProgress += drawing * drawSpeed;
         if (drawing == 0) {
@@ -81,6 +89,12 @@ public class Shooter : MonoBehaviour {
         }
 
         PlayParticles(gun);
+        PlaySound("shoot");
+        Invoke("PlayShellSound", 1.5f);
+    }
+
+    void PlayShellSound() {
+        PlaySound("eject-shell");
     }
 
     public void PlayParticles(Transform t) {
@@ -88,6 +102,15 @@ public class Shooter : MonoBehaviour {
         foreach (var p in particles) {
             p.Play();
         }
+    }
+
+    public void PlaySound(string s, Transform t=null) {
+        var a = GetComponentInChildren<AudioSource>();
+        if (t != null) {
+            a = t.GetComponentInChildren<AudioSource>();
+        }
+        a.clip = Resources.Load<AudioClip>("Sounds/"+s);
+        a.Play();
     }
 
     void UpdateSpriteVisuals() {
@@ -185,6 +208,7 @@ public class Shooter : MonoBehaviour {
             var msg = "DEBUG";
             if (GetComponent<NPC>()) msg = GetComponent<NPC>().DebugMsg();
             else if (GetComponent<Player>()) msg = GetComponent<Player>().DebugMsg();
+            else if (GetComponent<Boss>()) msg = GetComponent<Boss>().DebugMsg();
             debug.GetComponentInChildren<Text>().text = msg;
         } else {
             debug.SetActive(false);
