@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour {
     
@@ -15,8 +16,8 @@ public class Player : MonoBehaviour {
     int currentLevel = 0;
     int toLevel = 0;
     int levelHeight = 10;
-    // TODO probs 10 idk
     int maxLevel = 4;
+    float elevatorSpeed = 1.6f;
 
     // If we want to be somewhere else,
     // but are waiting for player to press up
@@ -105,7 +106,8 @@ public class Player : MonoBehaviour {
         }
         if (currentLevel == maxLevel+2) {
             wins += 1;
-            GameObject.Find("Floor (6)/Victory/Score").GetComponent<Text>().text = wins;
+            desiredLevel = 0;
+            GameObject.Find("Floor (6)/Victory/Score").GetComponent<Text>().text = "" + wins;
             return;
         }
         foreach (var o in opponents[currentLevel]) {
@@ -127,7 +129,7 @@ public class Player : MonoBehaviour {
         
         if (OnTheWay()) {
             // Keep your arms and legs in the elivator
-            transform.position = Vector3.Lerp(transform.position, toVec, 0.009f);
+            transform.position = Vector3.Lerp(transform.position, toVec, elevatorSpeed * Time.deltaTime);
             s.NoInput();
             return;
         }
