@@ -18,6 +18,9 @@ public class Player : MonoBehaviour {
     // TODO probs 10 idk
     int maxLevel = 5;
 
+    // Y offset for where the floor looks like it is
+    float floorLevel = -2.2f;
+
     // TODO default false
     public bool debugging = true;
 
@@ -42,8 +45,8 @@ public class Player : MonoBehaviour {
                 }
             }
 
-            var left = GameObject.Instantiate(NPCPrefab, new Vector3(-5, -3 + level * levelHeight, 0), Quaternion.identity);
-            var right = GameObject.Instantiate(NPCPrefab, new Vector3(5, -3 + level * levelHeight, 0), Quaternion.identity);
+            var left = GameObject.Instantiate(NPCPrefab, new Vector3(-5, floorLevel + level * levelHeight, 0), Quaternion.identity);
+            var right = GameObject.Instantiate(NPCPrefab, new Vector3(5, floorLevel + level * levelHeight, 0), Quaternion.identity);
             var os = new GameObject[]{left, right};
 
             // Decide who will be enemy
@@ -88,7 +91,7 @@ public class Player : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        var toVec = new Vector3(0, -3 + toLevel * levelHeight, 0);
+        var toVec = new Vector3(0, floorLevel + toLevel * levelHeight, 0);
 
         // TODO gross and potentially buggy
         // If we are close, but not there yet, then we have just 'arrrived' probs

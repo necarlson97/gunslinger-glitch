@@ -91,6 +91,12 @@ public class NPC : MonoBehaviour {
         }
         FindObjectOfType<Player>().CheckShot(gameObject);
         s.state = "dead";
+
+        var gore = transform.Find("Android Gore");
+        if(human) {
+            gore = transform.Find("Human Gore");
+        }
+        gore.GetComponentInChildren<ParticleSystem>().Play();
     }
 
     public void Deactivate() {
@@ -141,9 +147,11 @@ public class NPC : MonoBehaviour {
         var tint = Color.HSVToRGB(Random.Range(0f, 1f), 0.2f, 1f);
 
         // Dispaly the tinted portrait
-        var rawimg = transform.Find("Portrait/RawImage").GetComponent<RawImage>();
-        rawimg.texture = img;
-        rawimg.color = tint;
+        var rawImg = transform.Find("Portrait").GetComponentInChildren<RawImage>();
+        var imgBorder = transform.Find("Portrait").GetComponentInChildren<SpriteRenderer>();
+        rawImg.texture = img;
+        rawImg.color = tint;
+        imgBorder.color = tint;
 
         // Tint the npc sprite
         var sprite = transform.Find("Sprite").GetComponent<SpriteRenderer>();
@@ -151,7 +159,7 @@ public class NPC : MonoBehaviour {
 
         // Place the portrait off to the side
         if (facing < 0) {
-            transform.Find("Portrait").localPosition += new Vector3(8, 0, 0);
+            transform.Find("Portrait").localScale = new Vector3(-1, 1, 1);
         }
     }
 

@@ -78,6 +78,11 @@ public class Shooter : MonoBehaviour {
             transform.Find("Gun").localRotation = Quaternion.Euler(0, 0, 0);
             SetPose("right shoot");
         }
+
+        var particles = gameObject.GetComponentsInChildren<ParticleSystem>();
+        foreach (var p in particles) {
+            p.Play();
+        }
     }
 
     void UpdateSpriteVisuals() {
@@ -93,8 +98,6 @@ public class Shooter : MonoBehaviour {
         // Must match sprite gun;
         var drawUp = 0.42f;
         var drawRight = 1f;
-
-
         
         var handPose = "idle";
         if (drawProgress > 50) {
@@ -144,14 +147,17 @@ public class Shooter : MonoBehaviour {
         r.Find("FG Text").GetComponent<Text>().text = fg;
 
         // If we are almost about to shoot, keep gun where it is going
-        if (ReloadProgress() > 0.8f) {
+        if (ReloadProgress() > 0.8f || ReloadProgress() < 0.2f) {
             return;
         }
         // Show reloading
+        var gun = transform.Find("Gun");
         if (drawProgress < 0) {
             SetPose("left reload");
+            gun.localPosition = new Vector3(-0.2f, 0, 0);
         } else {
             SetPose("right reload");
+            gun.localPosition = new Vector3(0.2f, 0, 0);
         }
     }
 
