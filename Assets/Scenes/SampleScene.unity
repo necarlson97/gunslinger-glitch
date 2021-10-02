@@ -749,7 +749,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   NPCPrefab: {fileID: 6431323324748556394, guid: 82d600b2e73115f4dab74e3adcacbfa8, type: 3}
-  debugging: 1
+  debugging: 0
 --- !u!4 &1991531594 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6780611903823990303, guid: ff145de589dccee4197da4d357039009, type: 3}
