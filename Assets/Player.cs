@@ -106,7 +106,7 @@ public class Player : MonoBehaviour {
         }
 
         // Press up to start
-        if (currentLevel == 0 && Input.GetKey("w") || Input.GetKey("up")) {
+        if (currentLevel == 0 && (Input.GetKey("w") || Input.GetKey("up"))) {
             GoToFloor(1);
         }
 

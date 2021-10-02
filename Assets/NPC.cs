@@ -21,9 +21,21 @@ public class NPC : MonoBehaviour {
     internal bool active = false;
 
     public static List<Texture2D> androidImgs;
+    public static List<Texture2D> humanImgs;
+    public static List<string> androidQuotes;
+    public static List<string> humanQuotes;
+    
 
     void Awake() {
+        // Load and shuffle images
         androidImgs = NPC.Shuffle<Texture2D>(new List<Texture2D>(Resources.LoadAll<Texture2D>("Androids")));
+        humanImgs = NPC.Shuffle<Texture2D>(new List<Texture2D>(Resources.LoadAll<Texture2D>("Humans")));
+        
+        // Load and shuffle quotes (as each line from text)
+        var t = (TextAsset) Resources.Load("android-quotes", typeof(TextAsset));
+        androidQuotes = NPC.Shuffle<string>(new List<string>(t.text.Split('\n')));
+        t = (TextAsset) Resources.Load("human-quotes", typeof(TextAsset));
+        humanQuotes = NPC.Shuffle<string>(new List<string>(t.text.Split('\n')));
     }
 
     void Start() {
@@ -108,39 +120,39 @@ public class NPC : MonoBehaviour {
 
     public void SetPortrait() {
         // Select the portrait and quote for this npc
+        // Select an image and cycle it to the back
+        var textures = androidImgs;
+        if (human) textures = humanImgs;
+        var img = textures[0];
+        textures.RemoveAt(0);
+        textures.Add(img);
 
-        // Select this image and cycle it to the back
-        var img = androidImgs[0];
-        androidImgs.RemoveAt(0);
-        androidImgs.Add(img);
+        // Select a quote
+        var quotes = androidQuotes;
+        if (human) quotes = humanQuotes;
+        var quote = quotes[0];
+        quotes.RemoveAt(0);
+        quotes.Add(quote);
 
-        transform.Find("Portrait/RawImage").GetComponent<RawImage>().texture = img;
+        // Display quote (TODO tint?)
+        transform.Find("Speech/Text").GetComponent<Text>().text = quote;
 
-        var tint = GetTint(img);
+        // Get a random lightish color
+        var tint = Color.HSVToRGB(Random.Range(0f, 1f), 0.2f, 1f);
+
+        // Dispaly the tinted portrait
+        var rawimg = transform.Find("Portrait/RawImage").GetComponent<RawImage>();
+        rawimg.texture = img;
+        rawimg.color = tint;
+
+        // Tint the npc sprite
         var sprite = transform.Find("Sprite").GetComponent<SpriteRenderer>();
         sprite.color = tint;
 
+        // Place the portrait off to the side
         if (facing < 0) {
             transform.Find("Portrait").localPosition += new Vector3(8, 0, 0);
         }
-    }
-
-    // TODO
-    public Color GetTint(Texture2D tex) {
-        // Given an image, return the average color to use as a tint
-        Color[] pixels = tex.GetPixels();
-        int total = pixels.Length;
-
-        float r = 0;
-        float g = 0;
-        float b = 0;
-
-        for(int i = 0; i < total; i++){
-            r += pixels[i].r;
-            g += pixels[i].g;
-            b += pixels[i].b;
-        }
-        return new Color((byte)(r / total) , (byte)(g / total) , (byte)(b / total) , 0);
     }
 
     public static List<T> Shuffle<T>(List<T> list) {
