@@ -89,14 +89,15 @@ public class NPC : MonoBehaviour {
             // Nah it's just my bullet
             return;
         }
-        FindObjectOfType<Player>().CheckShot(gameObject);
         s.state = "dead";
 
         var gore = transform.Find("Android Gore");
-        if(human) {
+        if (human) {
             gore = transform.Find("Human Gore");
         }
-        gore.GetComponentInChildren<ParticleSystem>().Play();
+        s.PlayParticles(gore);
+
+        FindObjectOfType<Player>().CheckShot(gameObject);
     }
 
     public void Deactivate() {
@@ -105,6 +106,17 @@ public class NPC : MonoBehaviour {
         active = false;
         CancelInvoke("ChangeDrawing");
         CancelInvoke("ChangeDucking");
+
+        if (s.state == "alive") {
+            // TODO list of quotes
+            if (human) {
+                ChangeQuote("Thanks for saving my life! Good luck ahead.");
+            } else {
+                ChangeQuote("Ha. Silly human.");
+            }
+        } else {
+            ChangeQuote("");
+        }
     }
 
     public void Activate() {
@@ -140,8 +152,8 @@ public class NPC : MonoBehaviour {
         quotes.RemoveAt(0);
         quotes.Add(quote);
 
-        // Display quote (TODO tint?)
-        transform.Find("Speech/Text").GetComponent<Text>().text = quote;
+        // Display quote
+        ChangeQuote(quote);
 
         // Get a random lightish color
         var tint = Color.HSVToRGB(Random.Range(0f, 1f), 0.2f, 1f);
@@ -161,6 +173,10 @@ public class NPC : MonoBehaviour {
         if (facing < 0) {
             transform.Find("Portrait").localScale = new Vector3(-1, 1, 1);
         }
+    }
+
+    public void ChangeQuote(string q) {
+        transform.Find("Speech/Text").GetComponent<Text>().text = q;
     }
 
     public static List<T> Shuffle<T>(List<T> list) {

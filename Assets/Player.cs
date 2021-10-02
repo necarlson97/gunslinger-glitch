@@ -18,6 +18,10 @@ public class Player : MonoBehaviour {
     // TODO probs 10 idk
     int maxLevel = 5;
 
+    // If we want to be somewhere else,
+    // but are waiting for player to press up
+    int desiredLevel = 1;
+
     // Y offset for where the floor looks like it is
     float floorLevel = -2.2f;
 
@@ -108,9 +112,15 @@ public class Player : MonoBehaviour {
             return;
         }
 
-        // Press up to start
-        if (currentLevel == 0 && (Input.GetKey("w") || Input.GetKey("up"))) {
-            GoToFloor(1);
+        // Press up to next level
+        // TODO indicator above their head?
+        transform.Find("Elevator Help").gameObject.SetActive(false);
+        if (toLevel != desiredLevel) {
+            if (Input.GetKey("w") || Input.GetKey("up")) {
+                GoToFloor(desiredLevel);
+            } else {
+                transform.Find("Elevator Help").gameObject.SetActive(true);
+            }
         }
 
         if (Input.GetKey("a") || Input.GetKey("left")) {
@@ -135,8 +145,11 @@ public class Player : MonoBehaviour {
             // Nah it's just my bullet
             return;
         }
-        CheckShot(gameObject);
+        Debug.Log("Shot! " + other.gameObject.name);
         s.state = "injured";
+        s.PlayParticles(transform.Find("Human Gore"));
+
+        CheckShot(gameObject);
     }
 
     public void CheckShot(GameObject killed) {
@@ -145,28 +158,24 @@ public class Player : MonoBehaviour {
             o.GetComponent<NPC>().Deactivate();
         }
 
-        // Go to start
-        if (killed == gameObject) {
-            Debug.Log("I am dead!");
+        // Go to start immediatly if I (and someone else) was killed
+        if (killed == gameObject || toLevel == 0) {
             GoToFloor(0);
+            desiredLevel = 1;
             return;
         }
 
         var npc = killed.GetComponent<NPC>();
-        if (npc.human) {
-            // Go to start! or go down a level or two? Hm..
-            Debug.Log("Human Dead!");
-            GoToFloor(0);
-        } else {
-            // Go to next level!
-            Debug.Log("Robot Dead!");
-            GoToFloor(currentLevel + 1);
-        }
+        // Go to start when ready
+        if (npc.human) desiredLevel = 0;
+        // Go to next level when ready
+        else desiredLevel = currentLevel + 1;
     }
 
     public string DebugMsg() {
-        return string.Format("{0}\n{1} - {2}\ndrawing: {3}\nducking: {4}\nreloading: {5}",
+        return string.Format("{0}\n{1} - {2}\ndrawing: {3}\nducking: {4}\nreloading: {5}\nlevels {6}-{7}",
                 "Player", s.state, currentLevel,
-                s.drawProgress, s.ducking, s.ReloadProgress());
+                s.drawProgress, s.ducking, s.ReloadProgress(),
+                desiredLevel, toLevel);
     }
 }

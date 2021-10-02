@@ -71,15 +71,20 @@ public class Shooter : MonoBehaviour {
 
     void Shoot() {
         transform.Find("Gun/Bullet").gameObject.SetActive(true);
+        var gun = transform.Find("Gun");
         if (drawProgress < 0) {
-            transform.Find("Gun").localRotation = Quaternion.Euler(0, 180, 0);
+            gun.localRotation = Quaternion.Euler(0, 180, 0);
             SetPose("left shoot");
         } else {
-            transform.Find("Gun").localRotation = Quaternion.Euler(0, 0, 0);
+            gun.localRotation = Quaternion.Euler(0, 0, 0);
             SetPose("right shoot");
         }
 
-        var particles = gameObject.GetComponentsInChildren<ParticleSystem>();
+        PlayParticles(gun);
+    }
+
+    public void PlayParticles(Transform t) {
+        var particles = t.GetComponentsInChildren<ParticleSystem>();
         foreach (var p in particles) {
             p.Play();
         }
