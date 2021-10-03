@@ -69,9 +69,9 @@ public class Player : MonoBehaviour {
             opponents[level] = os;
         }
 
-        // Boss too
+        // Boss too (if it is loaded)
         var b = GameObject.Find("Boss").GetComponent<Boss>();
-        if (b.s.state == "dead") b.Refresh();
+        if (b!= null && b.s != null && b.s.state == "dead") b.Refresh();
     }
 
     bool GoToFloor(int floor) {
@@ -105,9 +105,8 @@ public class Player : MonoBehaviour {
             return;
         }
         if (currentLevel == maxLevel+2) {
-            wins += 1;
+            Win();
             desiredLevel = 0;
-            GameObject.Find("Floor (6)/Victory/Score").GetComponent<Text>().text = "" + wins;
             return;
         }
         foreach (var o in opponents[currentLevel]) {
@@ -115,12 +114,34 @@ public class Player : MonoBehaviour {
         }
     }
 
+
+    void Win() {
+        // Change the billbord at the top cuz you won!
+        wins += 1;
+        var t = GameObject.Find("Floor (6)/Victory/").transform;
+        t.Find("Score").GetComponent<Text>().text = "" + wins;
+
+        var msg = string.Format(
+            "Android Portraits Seen: {0}/{1}\n"
+            +"Android Quotes Seen: {2}/{3}\n"
+            +"Human Portraits Seen: {4}/{5}\n"
+            +"Human Quotes Seen: {6}/{7}\n",
+            NPC.androidImgsSeen, NPC.androidImgs.Count,
+            NPC.androidQuotesSeen, NPC.androidQuotes.Count,
+            NPC.humanImgsSeen, NPC.humanImgs.Count,
+            NPC.humanQuotesSeen, NPC.humanQuotes.Count
+        );
+        t.Find("Seen").GetComponent<Text>().text = msg;
+    }
+
     // Update is called once per frame
     void Update() {
-        var toVec = new Vector3(0, floorLevel + toLevel * levelHeight, 0);
+        // Allowing ducking always, as players may want to duck before boss
+        s.ducking = (Input.GetKey("s") || Input.GetKey("down"));
 
         // TODO gross and potentially buggy
         // If we are close, but not there yet, then we have just 'arrrived' probs
+        var toVec = new Vector3(0, floorLevel + toLevel * levelHeight, 0);
         if (transform.position != toVec && Vector3.Distance(transform.position, toVec) < 0.2f) {
             // Snap to the floor once we are close
             transform.position = toVec;
@@ -154,11 +175,11 @@ public class Player : MonoBehaviour {
         }
 
         // Option floors
-        if (Input.GetKeyDown("1")) {
+        if (Input.GetKeyDown("1") && currentLevel != -1) {
             desiredLevel = -1;
-        } else if (Input.GetKey("2")) {
+        } else if (Input.GetKey("2") && currentLevel != -2) {
             desiredLevel = -2;
-        }  else if (Input.GetKey("9")) {
+        }  else if (Input.GetKey("9") && currentLevel != maxLevel + 1) {
             desiredLevel = maxLevel + 1;
         }
 
@@ -166,8 +187,6 @@ public class Player : MonoBehaviour {
             Debug.Log("Toggel debugging");
             debugging = !debugging;
         }
-
-        s.ducking = (Input.GetKey("s") || Input.GetKey("down"));
     }
 
     public void Shot(Collider2D other) {

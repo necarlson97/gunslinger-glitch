@@ -107,11 +107,12 @@ public class Shooter : MonoBehaviour {
     }
 
     public void PlaySound(string s, Transform t=null) {
-        var a = GetComponentInChildren<AudioSource>();
-        if (t != null) {
-            a = t.GetComponentInChildren<AudioSource>();
+        if (t == null) {
+            t = transform.Find("Audio Source");
         }
+        var a = t.GetComponentInChildren<AudioSource>();
         a.clip = Resources.Load<AudioClip>("Sounds/"+s);
+        a.pitch = Random.Range(0.9f, 1.1f);
         a.Play();
     }
 

@@ -28,7 +28,12 @@ public class NPC : MonoBehaviour {
     // Just something to say if they survived
     public static List<string> androidQuips;
     public static List<string> humanQuips;
-    
+
+    // For stats on how the player has done
+    public static int androidImgsSeen = 0;
+    public static int humanImgsSeen = 0;
+    public static int androidQuotesSeen = 0;
+    public static int humanQuotesSeen = 0;
 
     void Awake() {
         // Load and shuffle images
@@ -135,6 +140,16 @@ public class NPC : MonoBehaviour {
         active = true;
         InvokeRepeating("ChangeDrawing", Random.Range(0f, 1f), 1f);
         InvokeRepeating("ChangeDucking", Random.Range(0f, 1f), 0.5f);
+
+        // TODO not exactly sure where is best to put *shrug*
+        // Boost stats!
+        if (human) {
+            humanImgsSeen++;
+            humanQuotesSeen++;
+        } else {
+            androidImgsSeen++;
+            androidQuotesSeen++;
+        }
     }
 
     public string DebugMsg() {

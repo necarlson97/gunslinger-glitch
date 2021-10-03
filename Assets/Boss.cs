@@ -18,7 +18,7 @@ public class Boss : MonoBehaviour {
     void Start() {
         s = GetComponent<Shooter>();
         s.drawSpeed = 2f;
-        s.reloadTime = 50;
+        s.reloadTime = 80;
 
         SetPortait();
     }
@@ -102,6 +102,8 @@ public class Boss : MonoBehaviour {
         }
         active = true;
         s.drawing = 1; // Start guns out!
+        s.drawProgress = 50; // Want him  to be able to 
+        // shoot before player
         InvokeRepeating("ChangeDrawing", Random.Range(0f, 1f), 0.2f);
     }
 
