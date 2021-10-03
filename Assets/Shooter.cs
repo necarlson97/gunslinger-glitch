@@ -39,6 +39,8 @@ public class Shooter : MonoBehaviour {
         } else if (state == "dead") {
             // Don't show mid-reload for dead
             reloadTimer = 0;
+            // Make sure bullet is inactive by default
+            transform.Find("Gun/Bullet").gameObject.SetActive(false);
         }
 
         UpdateSpriteVisuals();
@@ -51,9 +53,6 @@ public class Shooter : MonoBehaviour {
     }
 
     void UpdateGun() {
-        // Make sure bullet is inactive by default
-        transform.Find("Gun/Bullet").gameObject.SetActive(false);
-
         // Play sound if we just started ducking
         // TODO unducking?
         if (lastFrameDucking != ducking) {
@@ -70,6 +69,9 @@ public class Shooter : MonoBehaviour {
         // Always reload if we need to
         if (reloadTimer > 0) {
             reloadTimer -= 1;
+
+            // Make sure bullet is inactive by default
+            transform.Find("Gun/Bullet").gameObject.SetActive(false);
         } else if (Mathf.Abs(drawProgress) > 100) {
             // If we are reloaded and drawn, shoot!
             reloadTimer = reloadTime;

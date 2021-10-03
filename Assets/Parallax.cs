@@ -5,7 +5,7 @@ using UnityEngine;
  public class Parallax : MonoBehaviour {
 
      // % Distance between each layer
-     float gapSize = 0.2f;
+     float gapSize = 0.3f;
      
      void Update () {
          // For each successive background...

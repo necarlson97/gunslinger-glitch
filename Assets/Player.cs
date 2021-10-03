@@ -24,7 +24,7 @@ public class Player : MonoBehaviour {
     internal int desiredLevel = 1;
 
     // Y offset for where the floor looks like it is
-    float floorLevel = -2.2f;
+    float floorLevel = -2f;
 
     // TODO default false
     public bool debugging = true;
@@ -176,7 +176,6 @@ public class Player : MonoBehaviour {
             // Nah it's just my bullet
             return;
         }
-        Debug.Log("Shot! " + other.gameObject.name);
         s.state = "injured";
         s.PlayParticles(transform.Find("Human Gore"));
 
@@ -189,6 +188,8 @@ public class Player : MonoBehaviour {
             foreach (var o in opponents[currentLevel]) {
                 o.GetComponent<NPC>().Deactivate();
             }
+        } else if (currentLevel == maxLevel+1) {
+            FindObjectOfType<Boss>().Deactivate();
         }
         // if someone already died, then whatever
         if (WaitingForButton()) {

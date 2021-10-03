@@ -22,8 +22,12 @@ public class NPC : MonoBehaviour {
 
     public static List<Texture2D> androidImgs;
     public static List<Texture2D> humanImgs;
+    // The clue below their image
     public static List<string> androidQuotes;
     public static List<string> humanQuotes;
+    // Just something to say if they survived
+    public static List<string> androidQuips;
+    public static List<string> humanQuips;
     
 
     void Awake() {
@@ -36,6 +40,12 @@ public class NPC : MonoBehaviour {
         androidQuotes = NPC.Shuffle<string>(new List<string>(t.text.Split('\n')));
         t = (TextAsset) Resources.Load("human-quotes", typeof(TextAsset));
         humanQuotes = NPC.Shuffle<string>(new List<string>(t.text.Split('\n')));
+
+        // Load and shuffle taunts/congradulations
+        t = (TextAsset) Resources.Load("android-quips", typeof(TextAsset));
+        androidQuips = NPC.Shuffle<string>(new List<string>(t.text.Split('\n')));
+        t = (TextAsset) Resources.Load("human-quips", typeof(TextAsset));
+        humanQuips = NPC.Shuffle<string>(new List<string>(t.text.Split('\n')));
     }
 
     void Start() {
@@ -108,16 +118,13 @@ public class NPC : MonoBehaviour {
         CancelInvoke("ChangeDrawing");
         CancelInvoke("ChangeDucking");
 
+        var quip = "";
         if (s.state == "alive") {
             // TODO list of quotes
-            if (human) {
-                ChangeQuote("Thanks for saving my life! Good luck ahead.");
-            } else {
-                ChangeQuote("Ha. Silly human.");
-            }
-        } else {
-            ChangeQuote("");
-        }
+            if (human) quip = Cycle(humanQuips);
+            else quip = Cycle(androidQuips);;
+        } 
+        ChangeQuote(quip);
     }
 
     public void Activate() {
@@ -137,24 +144,28 @@ public class NPC : MonoBehaviour {
                 active ? "" : "DEACTIVATED");
     }
 
+    public T Cycle<T>(List<T> l) {
+        // Dequee the front of the list,
+        // pushing it to the back for later
+        var ret = l[0];
+        l.RemoveAt(0);
+        l.Add(ret);
+        return ret;
+    }
+
     public void SetPortrait() {
         // Select the portrait and quote for this npc
         // Select an image and cycle it to the back
         var textures = androidImgs;
         if (human) textures = humanImgs;
-        var img = textures[0];
-        textures.RemoveAt(0);
-        textures.Add(img);
+        var img = Cycle(textures);
 
         // Select a quote
         var quotes = androidQuotes;
         if (human) quotes = humanQuotes;
-        var quote = quotes[0];
-        quotes.RemoveAt(0);
-        quotes.Add(quote);
 
         // Display quote
-        ChangeQuote(quote);
+        ChangeQuote(Cycle(quotes));
 
         // Get a random lightish color
         var tint = Color.HSVToRGB(Random.Range(0f, 1f), 0.2f, 1f);
